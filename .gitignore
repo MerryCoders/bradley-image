@@ -1,5 +1,3 @@
-# .gitignore for Grails 1.2 and 1.3
-
 # web application files
 /web-app/WEB-INF
 
@@ -31,13 +29,14 @@
 # plugin release file
 /*.zip
 
-# older plugin install locations
-/plugins
-/web-app/plugins
-/web-app/WEB-INF/classes
+# General
+.DS_Store
+plugin.xml
+target/
+*.log
+.settings
 
-# "temporary" build files
-/target
-
-# other
-*.iws
+# IntelliJ Config Files
+*.iml
+.idea/*
+!.idea/codeStyleSettings.xml
