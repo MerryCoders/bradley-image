@@ -17,7 +17,7 @@ deleteAll = false
 dependencies = null
 plugins = null
 
-target(createPlatformUiTestApp: 'Creates test apps for manual testing') {
+target(createBradleyImageTestApps: 'Creates test apps for manual testing') {
 
     def configFile = new File(basedir, 'testapps.config.groovy')
     if (!configFile.exists()) {
@@ -40,7 +40,7 @@ private void init(String name, config) {
         error "pluginVersion wasn't specified for config '$name'"
     }
 
-    pluginZip = new File(basedir, "platform-ui-${pluginVersion}.zip")
+    pluginZip = new File(basedir, "bradley-image-${pluginVersion}.zip")
     if (!pluginZip.exists()) {
         error "plugin $pluginZip.absolutePath not found"
     }
@@ -51,7 +51,7 @@ private void init(String name, config) {
     }
 
     projectDir = config.projectDir
-    appName = 'platform-ui-test-' + name
+    appName = 'bradley-image-test-' + name
     testprojectRoot = "$projectDir/$appName"
 
     grailsVersion = config.grailsVersion
@@ -83,7 +83,7 @@ private void installPlugins() {
     contents = contents.replace('grails.project.test.class.dir = "target/test-classes"', '')
     contents = contents.replace('grails.project.test.reports.dir = "target/test-reports"', '')
     contents = contents.replace("//mavenLocal()", "mavenLocal()")
-    contents = contents.replace('plugins {', 'plugins {\n        compile ":platform-ui:' + pluginVersion + '"\n        compile ":bootstrap-ui:1.0.RC4"\n' + plugins)
+    contents = contents.replace('plugins {', 'plugins {\n        compile ":bradley-image:' + pluginVersion + '"\n        compile ":bootstrap-ui:1.0.RC4"\n' + plugins)
     contents = contents.replace('dependencies {', 'dependencies { ' + dependencies)
     buildConfig.withWriter { it.writeLine contents }
 
@@ -141,4 +141,4 @@ private void error(String message) {
 
 }
 
-setDefaultTarget 'createPlatformUiTestApp'
+setDefaultTarget 'createBradleyImageTestApps'
