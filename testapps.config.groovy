@@ -1,7 +1,7 @@
-String version = 'Version #'
-String grailsHomeRoot = '/path/to/your/grails/home'
-String dotGrailsCommon = '/path/to/.grails/in/your/home/directory'
-String projectDirCommon = '/path/to/target/directory/of/test/apps'
+String version = '0.1.0'
+String grailsHomeRoot = '/Users/deandelponte/.gvm/grails'
+String dotGrailsCommon = '/Users/deandelponte/.grails'
+String projectDirCommon = '/Users/deandelponte/code/testapps/bradley-image'
 
 v22 {
     grailsVersion = '2.2.4'
