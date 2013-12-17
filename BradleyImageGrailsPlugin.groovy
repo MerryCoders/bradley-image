@@ -4,7 +4,7 @@ class BradleyImageGrailsPlugin {
     def version = "0.1.0"
 
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "2.2 > *"
+    def grailsVersion = "2.3 > *"
 
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
@@ -26,17 +26,17 @@ class BradleyImageGrailsPlugin {
     def license = "APACHE"
 
     // Details of company behind the plugin (if there is one)
-    def organization = [ name: "Bradley Corporation", url: "http://www.bradleycorp.com/" ]
+    def organization = [name: "Bradley Corporation", url: "http://www.bradleycorp.com/"]
 
     // Any additional developers beyond the author specified above.
-    def developers = [ [ name: "Adrian Moore", email: "adrian.moore@bradleycorp.com" ]]
+    def developers = [[name: "Adrian Moore", email: "adrian.moore@bradleycorp.com"], [name: "Dean Del Ponte", email: "dean.delponte@gmail.com"]]
 
     // Location of the plugin's issue tracker.
     // TODO Fill this in when it's official
-    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
+    def issueManagement = [system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN"]
 
     // Online location of the plugin's browseable source code.
-    def scm = [ url: "https://github.com/MerryCoders/bradley-image" ]
+    def scm = [url: "https://github.com/MerryCoders/bradley-image"]
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before
