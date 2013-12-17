@@ -58,7 +58,7 @@ private void init(String name, config) {
     dotGrails = config.dotGrails + '/' + grailsVersion
 
     dependencies = config.dependencies
-    plugins = config.plugins
+    plugins = config.plugins ?: ""
 
 }
 
@@ -83,7 +83,7 @@ private void installPlugins() {
     contents = contents.replace('grails.project.test.class.dir = "target/test-classes"', '')
     contents = contents.replace('grails.project.test.reports.dir = "target/test-reports"', '')
     contents = contents.replace("//mavenLocal()", "mavenLocal()")
-    contents = contents.replace('plugins {', 'plugins {\n        compile ":bradley-image:' + pluginVersion + '"\n        compile ":bootstrap-ui:1.0.RC4"\n' + plugins)
+    contents = contents.replace('plugins {', 'plugins {\n        compile ":bradley-image:' + pluginVersion + '"\n' + plugins ?: "")
     contents = contents.replace('dependencies {', 'dependencies { ' + dependencies)
     buildConfig.withWriter { it.writeLine contents }
 

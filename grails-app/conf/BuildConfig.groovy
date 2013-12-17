@@ -18,6 +18,7 @@ grails.project.fork = [
 
 grails.project.dependency.resolver = "maven" // or ivy
 
+//grails.plugin.location.'bradley-image' = "/path/to/source/of/bradley-image/plugin"
 grails.project.dependency.resolution = {
 
     // inherit Grails' default dependencies
