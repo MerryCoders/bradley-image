@@ -1,5 +1,6 @@
 package com.merrycoders.bradleyimage
 
+import grails.plugin.lazylob.LazyBlob
 import grails.transaction.Transactional
 
 import javax.imageio.ImageIO
@@ -16,10 +17,10 @@ class BradleyImageService {
      * @return The modified ScaledImage instance
      */
     def correctHeightAndWidthOnScaledImage(ScaledImage scaledImage) {
-        Iterator<ImageReader> readers = ImageIO.getImageReadersBySuffix(scaledImage.bradleyImage.extension)
+        Iterator<ImageReader> readers = ImageIO.getImageReadersBySuffix(scaledImage.bradleyImage?.extension)
         if (readers.hasNext() && scaledImage?.data) {
             ImageReader reader = readers.next()
-            ImageInputStream is = new MemoryCacheImageInputStream(new ByteArrayInputStream(scaledImage.data))
+            ImageInputStream is = new MemoryCacheImageInputStream(new ByteArrayInputStream(scaledImage.data.getBytes(0L, scaledImage.data?.length() as Integer)))
             reader.setInput(is)
 
             scaledImage.width = reader.getWidth(reader.getMinIndex())
@@ -64,9 +65,14 @@ class BradleyImageService {
     }
 
     BradleyImage updateImageHash(BradleyImage bradleyImage) {
+
         BradleyImagePerceptualHash imagePHash = new BradleyImagePerceptualHash(32, 8)
-        bradleyImage.pHash = imagePHash.getHash(new ByteArrayInputStream(bradleyImage.getOriginalScaledImage().data))
+        LazyBlob data = bradleyImage.originalScaledImage?.data
+        byte [] bytes = data?.getBytes(0L, data?.length() as Integer)
+        bradleyImage.pHash = imagePHash.getHash(new ByteArrayInputStream(bytes))
+
         return bradleyImage
+
     }
 
 }

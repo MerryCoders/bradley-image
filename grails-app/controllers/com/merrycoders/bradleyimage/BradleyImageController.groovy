@@ -1,6 +1,7 @@
 package com.merrycoders.bradleyimage
 
 import grails.converters.JSON
+import grails.plugin.lazylob.LazyBlob
 import org.apache.commons.io.FilenameUtils
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
@@ -27,28 +28,25 @@ class BradleyImageController {
     public def upload() {
 
         try {
+
             BradleyImage image = new BradleyImage(params)
             image.name = FilenameUtils.getBaseName(params.qqfile)
             image.extension = FilenameUtils.getExtension(params.qqfile)
-
-            byte[] data = selectInputStream(request).getBytes()
-            InputStream originalInputStream = new ByteArrayInputStream(data)
-            ImageIO.read(originalInputStream)
 
             if (image.hasErrors() || !image.save()) {
                 log.error image.errors
                 return render(text: [success: false] as JSON, contentType: 'text/json')
             }
 
-            ScaledImage scaledImage = new ScaledImage()
-//                    data: data,
-//                    original: true,
-//                    imageSize: BradleyImageSize.findByName("original"),
-//                    bradleyImage: image
-//            )
+            byte[] data = selectInputStream(request)?.bytes
+            ScaledImage scaledImage = new ScaledImage(
+                    original: true,
+                    bradleyImage: image,
+                    imageSize: BradleyImageSize.findByName("original")
+            )
 
-            scaledImage.data = data
-            scaledImage.size = scaledImage.data.length
+            scaledImage.data = new LazyBlob(data, scaledImage)
+            scaledImage.size = scaledImage.data?.length()
             bradleyImageService.correctHeightAndWidthOnScaledImage(scaledImage)
 
             if (scaledImage.hasErrors() || !scaledImage.save()) {
@@ -72,7 +70,7 @@ class BradleyImageController {
             return render(text: [success: true, imageId: image.id] as JSON, contentType: 'text/json')
 
         } catch (IIOException e) {
-            log.error("Failed to upload file.", e)
+            log.error "Failed to upload file.", e
             return render(text: [success: false] as JSON, contentType: 'text/json')
         }
 

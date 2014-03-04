@@ -38,8 +38,7 @@ class ScaledImage {
     }
 
     String toString() {
-        //bradleyImage.name + bradleyImage.extension + "(${imageSize.name})"
-        "${bradleyImage.name}.${bradleyImage.extension}"
+        "${bradleyImage?.name}.${bradleyImage?.extension}"
     }
 
 }

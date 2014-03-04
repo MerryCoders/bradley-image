@@ -30,4 +30,24 @@ class BradleyImage {
         //category fetch: 'join'
     }
 
+    /**
+     *
+     * @return List of all ScaleImage instances generated from the original, BradleyImage instance
+     */
+    List<ScaledImage> getScaledImages() {
+        if (id) ScaledImage.findAllByBradleyImage(this)
+    }
+
+    /**
+     *
+     * @return The original ScaleImage instance
+     */
+    ScaledImage getOriginalScaledImage() {
+        if (id) ScaledImage.findByBradleyImageAndOriginal(this, true)
+    }
+
+    String toString() {
+        "${name}.${extension}"
+    }
+
 }
