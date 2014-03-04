@@ -2,11 +2,13 @@ package com.merrycoders.bradleyimage
 
 class BradleyImage {
 
+    def grailsMimeUtility
+
     String name
     String extension
     // ImageType imageType
     // UrlStructure category
-    // MimeType mimeType
+    MimeType mimeType = calculateMimeType()
     String altText
     String caption
     String titleText
@@ -18,8 +20,7 @@ class BradleyImage {
         //imageType(nullable: true)
         //category(nullable: true)
 
-        //mimeType(nullable: true)
-
+        mimeType(nullable: true)
         altText(nullable: true)
         caption(nullable: true)
         titleText(nullable: true)
@@ -44,6 +45,16 @@ class BradleyImage {
      */
     ScaledImage getOriginalScaledImage() {
         if (id) ScaledImage.findByBradleyImageAndOriginal(this, true)
+    }
+
+    private MimeType calculateMimeType() {
+
+        if (extension) {
+            def mimeType = grailsMimeUtility.getMimeTypeForExtension(extension)
+            MimeType guessedMimeType = mimeType ? MimeType.findOrSaveByName(mimeType?.name) : MimeType.findByName("application/octet-stream")
+            return guessedMimeType
+        }
+
     }
 
     String toString() {
