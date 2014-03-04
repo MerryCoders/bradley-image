@@ -7,14 +7,14 @@ class ScaledImage {
 
     BradleyImage bradleyImage
     LazyBlob data
-    //ImageSize imageSize
+    BradleyImageSize imageSize
     Integer width
     Integer height
     Integer size = 0
     Boolean original = false
 
     static mapping = {
-        //imageSize(fetch: "join")
+        imageSize(fetch: "join")
         data type: LazyBlobType, params: [propertyName: 'data']
     }
 
@@ -38,7 +38,8 @@ class ScaledImage {
     }
 
     String toString() {
-        bradleyImage.name + bradleyImage.extension + "(${imageSize.name})"
+        //bradleyImage.name + bradleyImage.extension + "(${imageSize.name})"
+        "${bradleyImage.name}.${bradleyImage.extension}"
     }
 
 }

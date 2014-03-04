@@ -45,6 +45,7 @@ grails.project.dependency.resolution = {
 
     plugins {
 
+        build ":tomcat:7.0.47" // For local testing purposes only
         build(":release:3.0.1",
                 ":rest-client-builder:1.0.3") {
             export = false
@@ -55,6 +56,7 @@ grails.project.dependency.resolution = {
         compile ":lazylob:0.1"
 
         runtime ":hibernate:3.6.10.6"
+        runtime ":resources:[1.2.RC2,1.2.1]"
 
     }
 }
