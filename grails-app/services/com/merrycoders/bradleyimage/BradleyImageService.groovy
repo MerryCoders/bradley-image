@@ -8,7 +8,9 @@ import javax.imageio.ImageIO
 import javax.imageio.ImageReader
 import javax.imageio.stream.ImageInputStream
 import javax.imageio.stream.MemoryCacheImageInputStream
+import javax.sql.rowset.serial.SerialBlob
 import java.awt.image.BufferedImage
+import java.sql.Blob
 
 @Transactional
 class BradleyImageService {
@@ -19,10 +21,13 @@ class BradleyImageService {
      * @return The modified ScaledImage instance
      */
     def correctHeightAndWidthOnScaledImage(ScaledImage scaledImage) {
+
+        if (!scaledImage) return null
+
         Iterator<ImageReader> readers = ImageIO.getImageReadersBySuffix(scaledImage.bradleyImage?.extension)
         if (readers.hasNext() && scaledImage?.data) {
             ImageReader reader = readers.next()
-            ImageInputStream is = new MemoryCacheImageInputStream(new ByteArrayInputStream(scaledImage.data.getBytes(0L, scaledImage.data?.length() as Integer)))
+            ImageInputStream is = new MemoryCacheImageInputStream(new ByteArrayInputStream(scaledImage.data.getBytes(1L, scaledImage.data?.length() as Integer)))
             reader.setInput(is)
 
             scaledImage.width = reader.getWidth(reader.getMinIndex())
@@ -41,14 +46,16 @@ class BradleyImageService {
         ScaledImage originalScaledImage = bradleyImage.getOriginalScaledImage()
 
         //load original bytes in, convert to another type
-        ImageInputStream inputStream = new MemoryCacheImageInputStream(new ByteArrayInputStream(originalScaledImage.data))
+        def lazyBlobInstance = originalScaledImage.data
+        byte[] bytes = lazyBlobInstance.getBytes(1L, lazyBlobInstance.length() as Integer)
+        ImageInputStream inputStream = new MemoryCacheImageInputStream(new ByteArrayInputStream(bytes))
         ByteArrayOutputStream baos = new ByteArrayOutputStream()
         ImageIO.write(ImageIO.read(inputStream), "png", baos)
-        originalScaledImage.data = baos.toByteArray()
+        originalScaledImage.data = new LazyBlob(new SerialBlob(baos.toByteArray()), originalScaledImage)
 
         //change metadata on image
         bradleyImage.extension = "png"
-        originalScaledImage.size = originalScaledImage.data.size()
+        originalScaledImage.size = originalScaledImage.data.length()
         correctHeightAndWidthOnScaledImage(originalScaledImage)
 
         //bradleyImage.mimeType =
@@ -79,23 +86,28 @@ class BradleyImageService {
 
     ScaledImage makeScaledCopy(BradleyImage image, BradleyImageSize imageSize) {
 
+        if (!image) return null
+        if (!imageSize) return image.originalScaledImage
+
         if (["gif", "svg"].contains(image.extension)) {
             log.error "Image ${image?.id} can't be resized, use a png"
             return image.originalScaledImage
         }
 
-        ScaledImage original = ScaledImage.findByBradleyImageAndOriginal(image, true)
-        InputStream originalInputStream = new ByteArrayInputStream(original.data)
+        ScaledImage originalScaledImageInstance = ScaledImage.findByBradleyImageAndOriginal(image, true)
+        LazyBlob lazyBlobInstance = originalScaledImageInstance?.data
+        byte[] bytes = lazyBlobInstance?.getBytes(1L, lazyBlobInstance?.length() as Integer)
+        InputStream originalInputStream = new ByteArrayInputStream(bytes)
         BufferedImage imageBuffer = ImageIO.read(originalInputStream)
 
         if (imageSize.fill) {
-            imageBuffer = fillAndScaleImage(original, imageSize, imageBuffer)
+            imageBuffer = fillAndScaleImage(originalScaledImageInstance, imageSize, imageBuffer)
         } else if (imageSize.scale && imageSize.crop) {
-            imageBuffer = scaleAndCropImage(original, imageSize, imageBuffer)
+            imageBuffer = scaleAndCropImage(originalScaledImageInstance, imageSize, imageBuffer)
         } else if (imageSize.scale) {
-            imageBuffer = scaleImage(original, imageSize, imageBuffer)
+            imageBuffer = scaleImage(originalScaledImageInstance, imageSize, imageBuffer)
         } else if (imageSize.crop) {
-            imageBuffer = cropImage(original, imageSize, imageBuffer)
+            imageBuffer = cropImage(originalScaledImageInstance, imageSize, imageBuffer)
         }
 
         ByteArrayOutputStream baos
@@ -108,8 +120,9 @@ class BradleyImageService {
                     bradleyImage: image,
                     size: data.size(),
                     imageSize: imageSize,
-                    original: false,
-                    data: data)
+                    original: false)
+            Blob blob = new SerialBlob(data)
+            newImage.data = new LazyBlob(blob, newImage)
 
             correctHeightAndWidthOnScaledImage(newImage)
 
