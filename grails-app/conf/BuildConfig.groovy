@@ -53,6 +53,7 @@ grails.project.dependency.resolution = {
 
         compile ":ajax-uploader:1.1"
         compile ':platform-core:1.0.RC6'
+        compile ":platform-ui:1.0.RC7"
         compile ":lazylob:0.1"
 
         runtime ":hibernate:3.6.10.6"

@@ -17,3 +17,9 @@
     <g:submitButton name="submit" value="${g.message([code: 'default.bradleyimage.batchupload.gotoimages.button'])}" style="display:none" id="submitButton"/>
 
 </g:form>
+
+<g:javascript>
+
+    jQuery("#idCollection").val("");
+
+</g:javascript>

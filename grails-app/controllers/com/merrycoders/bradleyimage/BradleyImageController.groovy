@@ -27,7 +27,10 @@ class BradleyImageController {
 
     public def batchImageEdit() {
 
-        render "toDo"
+        def bradleyImageIdList = params.id?.tokenize(",")*.toLong()
+        def bradleyImageInstanceList = BradleyImage.findAllByIdInList(bradleyImageIdList) ?: []
+
+        [bradleyImageInstanceList: bradleyImageInstanceList]
 
     }
 
