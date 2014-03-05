@@ -6,9 +6,9 @@ import com.merrycoders.bradleyimage.MimeType
 /**
  * Supported image types are configurable by inserting/removing database entries
  */
-class MimeTypeBootStrap extends BaseBootStrap {
+class MimeTypeBootStrap {
 
-    static public void initDevData() {
+    static public void init() {
 
         new MimeType(name: "image/gif").save()
         new MimeType(name: "image/jpeg").save()

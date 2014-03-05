@@ -11,8 +11,8 @@ class SpecificationDataCore extends Specification {
 
     def initAllData() {
 
-        BradleyImageSizeBootStrap.initDevData()
-        MimeTypeBootStrap.initDevData()
+        BradleyImageSizeBootStrap.init()
+        MimeTypeBootStrap.init()
 
     }
 

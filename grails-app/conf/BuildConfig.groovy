@@ -56,7 +56,7 @@ grails.project.dependency.resolution = {
         compile ":lazylob:0.1"
 
         runtime ":hibernate:3.6.10.6"
-        runtime ":resources:[1.2.RC2,1.2.1]"
+        runtime ":resources:1.2.6"
 
     }
 }
