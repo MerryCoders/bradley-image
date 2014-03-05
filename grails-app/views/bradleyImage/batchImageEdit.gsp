@@ -14,11 +14,16 @@
 
     <body>
 
-        <g:each in="${bradleyImageInstanceList}" var="bradleyImageInstance">
+        <ul>
 
-            ${bradleyImageInstance}<br/>
+            <g:each in="${bradleyImageInstanceList}" var="bradleyImageInstance">
 
-        </g:each>
+            %{--Edit name, alt-text, and caption--}%
+                <li>${bradleyImageInstance}</li>
+
+            </g:each>
+
+        </ul>
 
         <r:layoutResources/>
 

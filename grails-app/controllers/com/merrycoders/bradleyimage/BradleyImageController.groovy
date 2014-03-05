@@ -3,11 +3,11 @@ package com.merrycoders.bradleyimage
 import grails.converters.JSON
 import grails.plugin.lazylob.LazyBlob
 import org.apache.commons.io.FilenameUtils
+import org.apache.commons.lang.StringUtils
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 
 import javax.imageio.IIOException
-import javax.imageio.ImageIO
 import javax.servlet.http.HttpServletRequest
 
 class BradleyImageController {
@@ -91,6 +91,62 @@ class BradleyImageController {
             return uploadedFile.inputStream
         }
         return request.inputStream
+    }
+
+    public def display() {
+        Integer id = 0
+
+        if (params.id) {
+
+            id = params.id as Integer
+
+        } else if (params.path) {
+
+            try {
+                id = StringUtils.substringBefore(params.path, '/') as Integer
+            }
+            catch (NumberFormatException e) {
+                forward(controller: "errorPage", action: "notFound")
+                return
+            }
+
+        }
+
+        def bradleyImageInstance = BradleyImage.get(id)
+
+        if (bradleyImageInstance) {
+
+            def scaledImage
+
+            //check for other params to get specific ScaledImage
+            if (params.size && params.size != "original") {
+
+                def imageSize = BradleyImageSize.findByName(params.size)
+
+                if (imageSize) {
+
+                    scaledImage = ScaledImage.findByBradleyImageAndImageSize(bradleyImageInstance, imageSize)
+
+                    if (!scaledImage) {
+                        scaledImage = bradleyImageService.makeScaledCopy(bradleyImageInstance, imageSize)
+                    }
+                }
+            } else {
+                scaledImage = ScaledImage.findByBradleyImageAndOriginal(bradleyImageInstance, true)
+            }
+
+            if (scaledImage) {
+                response.contentLength = scaledImage.size
+                response.outputStream << scaledImage.data
+                response.outputStream.flush()
+            } else {
+                forward(controller: "errorPage", action: "notFound")
+            }
+        } else {
+            forward(controller: "errorPage", action: "notFound")
+
+        }
+
     }
 
 }
