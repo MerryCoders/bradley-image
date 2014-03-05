@@ -128,21 +128,29 @@ class BradleyImageController {
                     scaledImage = ScaledImage.findByBradleyImageAndImageSize(bradleyImageInstance, imageSize)
 
                     if (!scaledImage) {
+
                         scaledImage = bradleyImageService.makeScaledCopy(bradleyImageInstance, imageSize)
+
                     }
+
                 }
+
             } else {
                 scaledImage = ScaledImage.findByBradleyImageAndOriginal(bradleyImageInstance, true)
             }
 
             if (scaledImage) {
+
                 response.contentLength = scaledImage.size
                 response.outputStream << scaledImage.data
                 response.outputStream.flush()
+
             } else {
                 forward(controller: "errorPage", action: "notFound")
             }
+
         } else {
+
             forward(controller: "errorPage", action: "notFound")
 
         }

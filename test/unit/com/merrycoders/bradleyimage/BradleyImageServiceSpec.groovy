@@ -53,7 +53,7 @@ class BradleyImageServiceSpec extends SpecificationDataCore {
         given:
         BradleyImageSize originalBradleyImageSizeInstance = new BradleyImageSize(width: null, height: null, scale: true, name: "original").save()
         BradleyImageSize bradleyImageSizeInstance = new BradleyImageSize(width: 16, height: 8, scale: true, name: "w16_h8_s").save()
-        BradleyImage bradleyImageInstance = new BradleyImage(name: FilenameUtils.getName(fileName), extension: FilenameUtils.getExtension(fileName)).save()
+        BradleyImage bradleyImageInstance = new BradleyImage(name: FilenameUtils.getBaseName(fileName), extension: FilenameUtils.getExtension(fileName)).save()
 
         File fileInstance = new File(fileName)
         ScaledImage scaledImageInstance = new ScaledImage(height: 1, width: 1, imageSize: originalBradleyImageSizeInstance, bradleyImage: bradleyImageInstance, original: true)
@@ -85,7 +85,7 @@ class BradleyImageServiceSpec extends SpecificationDataCore {
     def "convertToPng"() {
         given:
         def bradleyImageSizeInstance = new BradleyImageSize(width: null, height: null, scale: true, name: "original").save()
-        BradleyImage bradleyImageInstance = new BradleyImage(name: FilenameUtils.getName(fileName), extension: FilenameUtils.getExtension(fileName)).save()
+        BradleyImage bradleyImageInstance = new BradleyImage(name: FilenameUtils.getBaseName(fileName), extension: FilenameUtils.getExtension(fileName)).save()
         ScaledImage scaledImageInstance = new ScaledImage(height: 1, width: 1, bradleyImage: bradleyImageInstance, original: true, imageSize: bradleyImageSizeInstance)
         File fileInstance = new File(fileName)
         Blob blob = new SerialBlob(fileInstance.bytes)
