@@ -10,10 +10,10 @@
 
 </uploader:uploader>
 
-<g:form controller="image" action="edit" method="GET">
+<g:form controller="bradleyImage" action="batchImageEdit" method="GET">
 
     <input id="idCollection" type="hidden" name="id" value=""/>
 
-    <g:submitButton name="submit" value="Go to images" style="display:none" id="submitButton"/>
+    <g:submitButton name="submit" value="${g.message([code: 'default.bradleyimage.batchupload.gotoimages.button'])}" style="display:none" id="submitButton"/>
 
 </g:form>

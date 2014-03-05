@@ -25,6 +25,12 @@ class BradleyImageController {
 
     }
 
+    public def batchImageEdit() {
+
+        render "toDo"
+
+    }
+
     public def upload() {
 
         try {
