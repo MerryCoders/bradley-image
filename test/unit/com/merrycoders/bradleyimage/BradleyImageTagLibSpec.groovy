@@ -17,7 +17,7 @@ class BradleyImageTagLibSpec extends SpecificationDataCore {
     def cleanup() {}
 
 
-    def "imageLink"() {
+    def "bradleyImg"() {
         given:
         def bradleyImageSizeInstance = new BradleyImageSize(width: null, height: null, scale: true, name: "original").save()
         BradleyImage bradleyImageInstance = new BradleyImage(name: FilenameUtils.getBaseName(fileName), extension: FilenameUtils.getExtension(fileName)).save()
@@ -28,7 +28,7 @@ class BradleyImageTagLibSpec extends SpecificationDataCore {
         scaledImageInstance.save()
 
         when:
-        def results = tagLib.imageLink([bradleyImage: bradleyImageInstance])
+        def results = tagLib.bradleyImg([bradleyImage: bradleyImageInstance])
 
         then:
         results == imageTag

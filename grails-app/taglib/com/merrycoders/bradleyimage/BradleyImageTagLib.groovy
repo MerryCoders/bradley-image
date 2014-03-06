@@ -32,20 +32,24 @@ class BradleyImageTagLib {
      * @attr altText (optional)
      * @attr noSize (optional) - Don't print the size onto the image tag.  Defaults to false.
      */
-    def imageLink = { attrs, body ->
+    def bradleyImg = { attrs, body ->
 
-        BradleyImage bradleyImageInstance = null
+        BradleyImage bradleyImageInstance = attrs.bradleyImage
+        Long id = attrs.id
         String title = ""
         String altText = ""
 
-        if (attrs.bradleyImage && attrs.bradleyImage instanceof BradleyImage) {
-            bradleyImageInstance = attrs.bradleyImage
+        if (bradleyImageInstance) {
+
             title = (params.title ?: bradleyImageInstance.titleText ?: "").trim()
             altText = (params.altText ?: bradleyImageInstance?.altText ?: "").trim()
-        } else if (attrs.id) {
-            bradleyImageInstance = BradleyImage.get(attrs.id as Long)
+
+        } else if (id) {
+
+            bradleyImageInstance = BradleyImage.get(id)
             title = (params.title ?: bradleyImageInstance.titleText ?: "").trim()
             altText = (params.altText ?: bradleyImageInstance?.altText ?: "").trim()
+
         }
 
 

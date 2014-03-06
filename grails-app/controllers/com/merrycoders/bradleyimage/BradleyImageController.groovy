@@ -141,8 +141,10 @@ class BradleyImageController {
 
             if (scaledImage) {
 
+                // Set mime type?
+                LazyBlob lazyBlobInstance = scaledImage.data
                 response.contentLength = scaledImage.size
-                response.outputStream << scaledImage.data
+                response.outputStream << lazyBlobInstance.getBytes(1L, lazyBlobInstance.length() as Integer)
                 response.outputStream.flush()
 
             } else {
