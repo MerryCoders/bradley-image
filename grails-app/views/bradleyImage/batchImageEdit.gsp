@@ -19,7 +19,7 @@
             <g:each in="${bradleyImageInstanceList}" var="bradleyImageInstance">
 
             %{--Edit name, alt-text, and caption--}%
-                <li>${bradleyImageInstance} - <bradleyImage:bradleyImg bradleyImage="${bradleyImageInstance}"/></li>
+                <li>${bradleyImageInstance} - <bradleyImage:bradleyImg bradleyImage="${bradleyImageInstance}" width="100" height="100" resize="f"/></li>
 
             </g:each>
 

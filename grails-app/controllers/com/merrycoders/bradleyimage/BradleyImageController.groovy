@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest
 class BradleyImageController {
 
     def bradleyImageService
+    def bradleyImageSizeService
 
     public def batchUpload() {
 
@@ -106,7 +107,7 @@ class BradleyImageController {
                 id = StringUtils.substringBefore(params.path, '/') as Integer
             }
             catch (NumberFormatException e) {
-                forward(controller: "errorPage", action: "notFound")
+                response.status = 404
                 return
             }
 
@@ -118,26 +119,8 @@ class BradleyImageController {
 
             def scaledImage
 
-            //check for other params to get specific ScaledImage
-            if (params.size && params.size != "original") {
 
-                def imageSize = BradleyImageSize.findByName(params.size)
-
-                if (imageSize) {
-
-                    scaledImage = ScaledImage.findByBradleyImageAndImageSize(bradleyImageInstance, imageSize)
-
-                    if (!scaledImage) {
-
-                        scaledImage = bradleyImageService.makeScaledCopy(bradleyImageInstance, imageSize)
-
-                    }
-
-                }
-
-            } else {
-                scaledImage = ScaledImage.findByBradleyImageAndOriginal(bradleyImageInstance, true)
-            }
+            scaledImage = getScaledImage(bradleyImageInstance, scaledImage)
 
             if (scaledImage) {
 
@@ -148,14 +131,63 @@ class BradleyImageController {
                 response.outputStream.flush()
 
             } else {
-                forward(controller: "errorPage", action: "notFound")
+                response.status = 404
             }
 
         } else {
 
-            forward(controller: "errorPage", action: "notFound")
+            response.status = 404
 
         }
+
+    }
+
+    /**
+     * Returns a ScaledImage instance in accordance with the resizing parameters.
+     * If image scaling is not locked down, it will generate all requested sizes on the fly.
+     * @param bradleyImageInstance
+     * @param scaledImage
+     * @return ScaledImage instance
+     */
+    private ScaledImage getScaledImage(BradleyImage bradleyImageInstance, ScaledImage scaledImage) {
+
+        //check for other params to get specific ScaledImage
+        if (params.size && params.size != "original") {
+
+            def imageSize = BradleyImageSize.findByName(params.size)
+
+            Boolean isLockedDown = grailsApplication.config.grails.com.merrycoders.bradleyimage.locked.down != "false"
+
+            if (imageSize) {
+
+                scaledImage = findOrSaveScaledImage(bradleyImageInstance, imageSize, scaledImage)
+
+            } else if (!isLockedDown && params.size) {
+
+                imageSize = bradleyImageSizeService.findOrSaveByString(params.size)
+                scaledImage = findOrSaveScaledImage(bradleyImageInstance, imageSize, scaledImage)
+
+
+            }
+
+        } else {
+            scaledImage = ScaledImage.findByBradleyImageAndOriginal(bradleyImageInstance, true)
+        }
+
+        return scaledImage
+    }
+
+    private ScaledImage findOrSaveScaledImage(BradleyImage bradleyImageInstance, BradleyImageSize imageSize, ScaledImage scaledImage) {
+
+        scaledImage = ScaledImage.findByBradleyImageAndImageSize(bradleyImageInstance, imageSize)
+
+        if (!scaledImage) {
+
+            scaledImage = bradleyImageService.makeScaledCopy(bradleyImageInstance, imageSize)
+
+        }
+
+        return scaledImage
 
     }
 

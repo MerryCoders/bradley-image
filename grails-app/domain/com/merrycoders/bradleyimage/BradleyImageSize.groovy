@@ -1,7 +1,6 @@
 package com.merrycoders.bradleyimage
 
 class BradleyImageSize {
-    //NAME_WIDTH_HEIGHT_SC
     String name
     Integer width
     Integer height

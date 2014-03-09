@@ -21,7 +21,6 @@ class BradleyImageTagLib {
                 model: [id: id]
         )
 
-
     }
 
     /**
@@ -51,7 +50,6 @@ class BradleyImageTagLib {
             altText = (params.altText ?: bradleyImageInstance?.altText ?: "").trim()
 
         }
-
 
         String imageTag = ""
 
